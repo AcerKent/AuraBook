@@ -1,4 +1,4 @@
-# Everything Claude Code (Ebook Archiver)
+# AuraBook
 
 An automated tool to organize, rename, and convert your e-book library. It scans for EPUB files, extracts metadata (Author, Publisher, Date), renames them for consistency, categorizes them by publisher, and automatically converts them to PDF.
 
