@@ -1,0 +1,5 @@
+
+# User requested exclusions
+_claude_tools/
+ebook/
+input/*
