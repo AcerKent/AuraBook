@@ -9,12 +9,14 @@ from src.services.epub_parser import extract_epub_metadata
 from src.services.converter import convert_epub_to_pdf
 from tqdm import tqdm
 
-def process_workflow(input_dir=None):
+def process_workflow(input_dir=None, output_dir=None):
     """Main workflow to process books."""
     ensure_directories()
     
     # Use custom input_dir if provided, otherwise fall back to config default
     scan_dir = input_dir if input_dir else INPUT_DIR
+    # Use custom output_dir if provided, otherwise fall back to config default
+    finish_dir = output_dir if output_dir else FINISH_DIR
     
     # Get all files first to allow tqdm to show total progress
     # Use rglob('*') to find all files recursively in subdirectories
@@ -100,7 +102,7 @@ def process_workflow(input_dir=None):
                     category = categorize_book(process_path.stem)
                     pbar.write(f"  Category from Keywords: {category}")
                 
-                dest_dir = FINISH_DIR / "epub" / category
+                dest_dir = finish_dir / "epub" / category
                 dest_dir.mkdir(exist_ok=True, parents=True)
                 final_path = move_to_finish(process_path, dest_dir)
                 pbar.write(f"✓ Moved to -> {dest_dir}\n")
@@ -108,9 +110,9 @@ def process_workflow(input_dir=None):
                 
                 # 5. Convert to PDF
                 # PDF Destination: finish/pdf/<Category>/
-                pdf_dest_dir = FINISH_DIR / "pdf" / category
+                pdf_dest_dir = finish_dir / "pdf" / category
                 pbar.write(f"  Converting to PDF...")
-                pdf_path = convert_epub_to_pdf(final_path, pdf_dest_dir)
+                pdf_path = convert_epub_to_pdf(final_path, pdf_dest_dir, progress_callback=pbar.write)
                 
                 if pdf_path:
                     pbar.write(f"✓ PDF Created -> {pdf_dest_dir}")
