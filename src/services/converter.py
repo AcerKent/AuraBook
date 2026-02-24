@@ -4,7 +4,7 @@ import threading
 import time
 from pathlib import Path
 
-def convert_epub_to_pdf(input_path: Path, output_dir: Path, idle_timeout: int = 120, progress_callback=None) -> Path:
+def convert_epub_to_pdf(input_path: Path, output_dir: Path, idle_timeout: int = 120, font_size: int = 20, progress_callback=None) -> Path:
     """
     Convert an EPUB file to PDF using ebook-convert (Calibre).
     
@@ -36,6 +36,7 @@ def convert_epub_to_pdf(input_path: Path, output_dir: Path, idle_timeout: int = 
             str(output_path),
             "--paper-size", "a4",
             "--pdf-page-numbers",
+            "--pdf-default-font-size", str(font_size),
         ]
         
         # Use Popen with stdout streaming for activity detection

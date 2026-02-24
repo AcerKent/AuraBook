@@ -11,8 +11,13 @@ An automated tool to organize, rename, and convert your e-book library. It scans
 - **Publisher Categorization**: Moves files to `finish/epub/<Publisher Name>/`.
 - **Auto-Conversion**: Converts processed EPUBs to PDF using Calibre's `ebook-convert`.
     - PDFs are saved to `finish/pdf/<Publisher Name>/`.
+    - Configurable font size via `--font-size` (default: 20pt).
+    - Activity-based timeout: only kills conversion if no progress for 120 seconds.
+    - Real-time conversion progress display.
+- **Custom Paths**: Specify custom input/output directories via CLI arguments.
+- **Per-File Timing**: Logs processing time for each file.
+- **Execution Summary**: Color-coded report with failed file details.
 - **Automated Execution**: Includes a batch script for background runs via Windows Task Scheduler.
-- **Execution Summary**: Provides a color-coded report of successes and errors.
 
 ## Prerequisites
 
@@ -29,18 +34,29 @@ An automated tool to organize, rename, and convert your e-book library. It scans
 
 ## Usage
 
-### Manual Execution
-Run the main script:
+### Command Line Options
 ```bash
+# Default (uses input/ and finish/ directories)
 python main.py
+
+# Specify custom input and output directories
+python main.py --input "D:\Books\new_epubs" --output "D:\Archive"
+
+# Specify PDF font size (in points)
+python main.py --font-size 16
+
+# All options combined
+python main.py --input "D:\Books" --output "D:\Archive" --font-size 14
 ```
+
+| Argument | Description | Default |
+|---|---|---|
+| `--input` | Input directory containing EPUB files | `input/` |
+| `--output` | Output directory for processed files | `finish/` |
+| `--font-size` | PDF default font size in points | `20` |
 
 ### Automated Execution (Background)
 Double-click `run_auto.bat`. This script uses the configured Python environment to run the processor without user intervention.
-
-### Configuration
-- **Input Directory**: Place your raw EPUB files in `input/`.
-- **Output Directory**: Processed files will appear in `finish/`.
 
 ## Project Structure
 

@@ -9,7 +9,7 @@ from src.services.epub_parser import extract_epub_metadata
 from src.services.converter import convert_epub_to_pdf
 from tqdm import tqdm
 
-def process_workflow(input_dir=None, output_dir=None):
+def process_workflow(input_dir=None, output_dir=None, font_size=20):
     """Main workflow to process books."""
     ensure_directories()
     
@@ -31,7 +31,8 @@ def process_workflow(input_dir=None, output_dir=None):
         'total': len(files_to_process),
         'epub_success': 0,
         'pdf_success': 0,
-        'errors': 0
+        'errors': 0,
+        'error_files': []
     }
 
     # 1. Process files with progress bar
@@ -112,7 +113,7 @@ def process_workflow(input_dir=None, output_dir=None):
                 # PDF Destination: finish/pdf/<Category>/
                 pdf_dest_dir = finish_dir / "pdf" / category
                 pbar.write(f"  Converting to PDF...")
-                pdf_path = convert_epub_to_pdf(final_path, pdf_dest_dir, progress_callback=pbar.write)
+                pdf_path = convert_epub_to_pdf(final_path, pdf_dest_dir, font_size=font_size, progress_callback=pbar.write)
                 
                 if pdf_path:
                     pbar.write(f"✓ PDF Created -> {pdf_dest_dir}")
@@ -128,6 +129,7 @@ def process_workflow(input_dir=None, output_dir=None):
                 pbar.write(f"❌ Error processing {file_path.name}: {e}")
                 pbar.write(f"⏱ Processing time: {elapsed:.2f}s\n")
                 stats['errors'] += 1
+                stats['error_files'].append((file_path.name, str(e)))
 
     # Print Summary
     print_summary(stats)
@@ -155,6 +157,9 @@ def print_summary(stats):
     # Errors
     if stats['errors'] > 0:
         print(f"Errors:            {RED}{stats['errors']}{RESET}")
+        print(f"\n{BOLD}Failed Files:{RESET}")
+        for name, err in stats.get('error_files', []):
+            print(f"  {RED}❌ {name}{RESET}: {err}")
     else:
         print(f"Errors:            {GREEN}0{RESET}")
     print("="*60 + "\n")
