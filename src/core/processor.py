@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 from src.core.config import INPUT_DIR, PROCESS_DIR, FINISH_DIR, ensure_directories
 from src.services.cleaner import clean_filename
@@ -33,6 +34,7 @@ def process_workflow():
         for file_path in pbar:
             pbar.set_description(f"Processing {file_path.name}")
             try:
+                start_time = time.time()
                 process_path = copy_to_process(file_path, PROCESS_DIR)
                 
                 # 2. Clean filename
@@ -108,13 +110,18 @@ def process_workflow():
                 pdf_path = convert_epub_to_pdf(final_path, pdf_dest_dir)
                 
                 if pdf_path:
-                    pbar.write(f"✓ PDF Created -> {pdf_dest_dir}\n")
+                    pbar.write(f"✓ PDF Created -> {pdf_dest_dir}")
                     stats['pdf_success'] += 1
                 else:
-                    pbar.write(f"❌ PDF Conversion failed for {final_path.name}\n")
+                    pbar.write(f"❌ PDF Conversion failed for {final_path.name}")
+                
+                elapsed = time.time() - start_time
+                pbar.write(f"⏱ Processing time: {elapsed:.2f}s\n")
                 
             except Exception as e:
+                elapsed = time.time() - start_time
                 pbar.write(f"❌ Error processing {file_path.name}: {e}")
+                pbar.write(f"⏱ Processing time: {elapsed:.2f}s\n")
                 stats['errors'] += 1
 
     # Print Summary
