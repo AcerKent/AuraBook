@@ -9,16 +9,19 @@ from src.services.epub_parser import extract_epub_metadata
 from src.services.converter import convert_epub_to_pdf
 from tqdm import tqdm
 
-def process_workflow():
+def process_workflow(input_dir=None):
     """Main workflow to process books."""
     ensure_directories()
     
+    # Use custom input_dir if provided, otherwise fall back to config default
+    scan_dir = input_dir if input_dir else INPUT_DIR
+    
     # Get all files first to allow tqdm to show total progress
     # Use rglob('*') to find all files recursively in subdirectories
-    files_to_process = [f for f in INPUT_DIR.rglob("*") if f.is_file() and f.name != ".gitkeep"]
+    files_to_process = [f for f in scan_dir.rglob("*") if f.is_file() and f.name != ".gitkeep"]
     
     if not files_to_process:
-        print(f"No files found in {INPUT_DIR} (recursive scan).")
+        print(f"No files found in {scan_dir} (recursive scan).")
         return
 
     # Statistics
