@@ -35,9 +35,9 @@ def process_workflow(input_dir=None, output_dir=None):
     }
 
     # 1. Process files with progress bar
-    with tqdm(files_to_process, unit="file") as pbar:
+    with tqdm(files_to_process, unit="file", desc="📚 Overall Progress", bar_format="{desc}: {bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]") as pbar:
         for file_path in pbar:
-            pbar.set_description(f"Processing {file_path.name}")
+            pbar.write(f"\n📖 Processing: {file_path.name}")
             try:
                 start_time = time.time()
                 process_path = copy_to_process(file_path, PROCESS_DIR)

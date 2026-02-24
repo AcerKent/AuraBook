@@ -36,7 +36,6 @@ def convert_epub_to_pdf(input_path: Path, output_dir: Path, idle_timeout: int = 
             str(output_path),
             "--paper-size", "a4",
             "--pdf-page-numbers",
-            "--pdf-no-image-float",
         ]
         
         # Use Popen with stdout streaming for activity detection
@@ -44,7 +43,6 @@ def convert_epub_to_pdf(input_path: Path, output_dir: Path, idle_timeout: int = 
             cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            bufsize=1,
         )
         
         # Shared state for activity tracking
